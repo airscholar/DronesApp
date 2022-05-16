@@ -24,8 +24,9 @@ export class DroneController {
   async createDrone(
     @Body() createDroneDto: CreateDroneDto,
   ): Promise<IServiceResponse> {
+    // console.log(createDroneDto);
     const res = await this.droneService.createDrone(createDroneDto);
-
+    // console.log(res);
     if (res instanceof Error) {
       throw new InternalServerErrorException(res.message);
     }

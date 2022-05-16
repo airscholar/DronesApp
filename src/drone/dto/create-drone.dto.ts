@@ -5,6 +5,7 @@ import {
   Max,
   MaxLength,
 } from 'class-validator';
+import { Medication } from 'src/medication/entities/medication.entity';
 import { DroneModel, DroneState } from '../entities/drone.entity';
 
 export class CreateDroneDto {

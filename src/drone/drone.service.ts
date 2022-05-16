@@ -21,21 +21,22 @@ export class DroneService {
   ): Promise<Drone> {
     const drone = new Drone();
 
-    droneInput.SerialNumber ?? (drone.SerialNumber = droneInput.SerialNumber);
-    droneInput.Model ?? (drone.Model = droneInput.Model);
-    droneInput.WeightLimit ?? (drone.WeightLimit = droneInput.WeightLimit);
-    droneInput.BatteryCapacity ??
-      (drone.BatteryCapacity = droneInput.BatteryCapacity);
-    droneInput.State ?? (drone.State = droneInput.State);
+    if (droneInput.SerialNumber) drone.SerialNumber = droneInput.SerialNumber;
+    if (droneInput.Model) drone.Model = droneInput.Model;
+    if (droneInput.WeightLimit) drone.WeightLimit = droneInput.WeightLimit;
+    if (droneInput.BatteryCapacity)
+      drone.BatteryCapacity = droneInput.BatteryCapacity;
+    if (droneInput.State) drone.State = droneInput.State;
 
     return drone;
   }
 
-  async createDrone(createDroneDto: CreateDroneDto): Promise<Drone | Error> {
+  async createDrone(createDroneDto: CreateDroneDto): Promise<Drone> {
     try {
       const newDrone = await this.assignDrone(createDroneDto);
       newDrone.CreatedAt = new Date();
       newDrone.UpdatedAt = new Date();
+      console.log(newDrone);
 
       return await this.droneRepository.save(newDrone);
     } catch (err) {
