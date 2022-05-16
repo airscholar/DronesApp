@@ -19,22 +19,27 @@ export class MedicationController {
   constructor(private readonly medicationService: MedicationService) {}
 
   @Post()
-  create(@Body() createMedicationDto: CreateMedicationDto) {
+  async create(@Body() createMedicationDto: CreateMedicationDto) {
     return this.medicationService.createMedication(createMedicationDto);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.medicationService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.medicationService.findMedicationById(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.medicationService.findMedicationById(+id);
+  }
+
+  @Get('drone/:droneId/')
+  async fetchLoadedMedications(@Param('droneId') droneId: number) {
+    return await this.medicationService.fetchLoadedMedication(droneId)
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateMedicationDto: UpdateMedicationDto,
   ) {
@@ -42,7 +47,7 @@ export class MedicationController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.medicationService.remove(+id);
   }
 }

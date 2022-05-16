@@ -1,5 +1,12 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DroneService } from 'src/drone/drone.service';
+import { Drone } from 'src/drone/entities/drone.entity';
 import { IServiceResponse } from 'src/interface/interface';
 import { Repository } from 'typeorm';
 import { CreateMedicationDto } from './dto/create-medication.dto';
@@ -11,6 +18,7 @@ export class MedicationService {
   constructor(
     @InjectRepository(Medication)
     private medicationRepository: Repository<Medication>,
+    private droneService: DroneService,
   ) {}
 
   async assignMedication(
@@ -30,19 +38,39 @@ export class MedicationService {
   async createMedication(
     createMedicationDto: CreateMedicationDto,
   ): Promise<IServiceResponse> {
-    try {
-      const newMedication = await this.assignMedication(createMedicationDto);
-      newMedication.CreatedAt = new Date();
-      newMedication.UpdatedAt = new Date();
+    // try {
+    const newMedication = await this.assignMedication(createMedicationDto);
+    newMedication.CreatedAt = new Date();
+    newMedication.UpdatedAt = new Date();
 
-      const med = await this.medicationRepository.save(newMedication);
-      return {
-        message: 'Medication created successfully',
-        results: med,
-      };
-    } catch (err) {
-      throw new InternalServerErrorException(err.detail);
+    let drone = await this.droneService.findById(createMedicationDto.DroneId);
+
+    if (drone instanceof Drone) {
+      let size =
+        drone.Medication.reduce((acc, val) => acc + val.Weight, 0) +
+        newMedication.Weight;
+
+      if (size > drone.WeightLimit) {
+        throw new BadRequestException('Drone weight limit exceeded');
+      }
+
+      let isExist = drone.Medication.findIndex(
+        (x) => x.Code == newMedication.Code,
+      );
+      if (isExist >= 0) {
+        throw new BadRequestException('Medication already loaded');
+      }
+      newMedication.Drone = drone;
     }
+
+    const med = await this.medicationRepository.save(newMedication);
+    return {
+      message: 'Medication created successfully',
+      results: med.Drone.Medication.push(newMedication),
+    };
+    // } catch (err) {
+    //   throw new InternalServerErrorException(err.detail);
+    // }
   }
 
   async findAll(): Promise<IServiceResponse> {
@@ -93,6 +121,19 @@ export class MedicationService {
     return {
       message: 'Medication fetched successfully',
       results: medication,
+    };
+  }
+
+  async fetchLoadedMedication(id: number) {
+    let drone = await this.droneService.findById(id);
+
+    if (!drone || drone instanceof Error) {
+      throw new NotFoundException('Drone is not found');
+    }
+
+    return {
+      message: 'Medications retrieved successfully',
+      medications: drone.Medication,
     };
   }
 
