@@ -14,4 +14,7 @@ export class CreateMedicationDto {
   @IsNotEmpty()
   @IsUrl()
   Image: string;
+
+  @IsNotEmpty()
+  DroneId: number;
 }

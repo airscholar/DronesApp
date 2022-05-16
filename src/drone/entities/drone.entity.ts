@@ -1,5 +1,6 @@
 import { Max, MaxLength } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Medication } from 'src/medication/entities/medication.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum DroneState {
   IDLE = 'IDLE',
@@ -45,6 +46,11 @@ export class Drone {
     default: DroneState.IDLE,
   })
   State: string;
+
+  @OneToMany((type) => Medication, (medication) => medication.Drone, {
+    eager: true,
+  })
+  Medication: [Medication];
 
   @Column({
     default: () => 'CURRENT_TIMESTAMP',
