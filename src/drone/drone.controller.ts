@@ -9,6 +9,7 @@ import {
   InternalServerErrorException,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/auth/guards/auth.guard';
 import { IServiceResponse } from 'src/interface/interface';
 import { DroneService } from './drone.service';
@@ -16,6 +17,7 @@ import { CreateDroneDto } from './dto/create-drone.dto';
 import { UpdateDroneDto } from './dto/update-drone.dto';
 
 @UseGuards(JwtGuard)
+@ApiTags('Drones')
 @Controller('drones')
 export class DroneController {
   constructor(private readonly droneService: DroneService) {}
@@ -85,6 +87,16 @@ export class DroneController {
     return {
       message: 'Drone removed successfully',
       results: {},
+    };
+  }
+
+  @Get(':id/batteryLevel')
+  async batteryLevel(@Param('id') dronedId: number): Promise<IServiceResponse> {
+    const res = await this.droneService.batteryLevel(dronedId);
+
+    return {
+      message: 'Battery level fetched successfully',
+      results: res,
     };
   }
 }

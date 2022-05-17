@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateDroneDto } from './dto/create-drone.dto';
@@ -36,7 +40,6 @@ export class DroneService {
       const newDrone = await this.assignDrone(createDroneDto);
       newDrone.CreatedAt = new Date();
       newDrone.UpdatedAt = new Date();
-      console.log(newDrone);
 
       return await this.droneRepository.save(newDrone);
     } catch (err) {
@@ -49,7 +52,7 @@ export class DroneService {
       const drones = await this.droneRepository.find({});
       return drones ?? drones;
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       throw new InternalServerErrorException(
         `Error occured while fetching drones`,
       );
@@ -58,13 +61,17 @@ export class DroneService {
 
   async findById(id: number): Promise<Drone | Error> {
     try {
-      return await this.droneRepository.findOne({
+      let drone = await this.droneRepository.findOne({
         where: {
           Id: id,
         },
       });
+
+      if (!drone) return new NotFoundException('Drone is not found');
+
+      return drone;
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       return new InternalServerErrorException(
         `Unable to fetch a drone with ID ${id}`,
       );
@@ -108,5 +115,15 @@ export class DroneService {
         `Error occured while deleting drone`,
       );
     }
+  }
+
+  async batteryLevel(id: number) {
+    const drone = await this.findById(id);
+
+    if (!drone || drone instanceof Error) {
+      throw drone;
+    }
+
+    return drone.BatteryCapacity;
   }
 }
