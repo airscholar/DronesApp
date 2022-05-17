@@ -43,30 +43,10 @@ export class MedicationService {
     newMedication.CreatedAt = new Date();
     newMedication.UpdatedAt = new Date();
 
-    let drone = await this.droneService.findById(createMedicationDto.DroneId);
-
-    if (drone instanceof Drone) {
-      let size =
-        drone.Medication.reduce((acc, val) => acc + val.Weight, 0) +
-        newMedication.Weight;
-
-      if (size > drone.WeightLimit) {
-        throw new BadRequestException('Drone weight limit exceeded');
-      }
-
-      let isExist = drone.Medication.findIndex(
-        (x) => x.Code == newMedication.Code,
-      );
-      if (isExist >= 0) {
-        throw new BadRequestException('Medication already loaded');
-      }
-      newMedication.Drone = drone;
-    }
-
     const med = await this.medicationRepository.save(newMedication);
     return {
       message: 'Medication created successfully',
-      results: med.Drone.Medication.push(newMedication),
+      results: med,
     };
     // } catch (err) {
     //   throw new InternalServerErrorException(err.detail);
@@ -81,7 +61,7 @@ export class MedicationService {
         results: medications ?? medications,
       };
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       throw new InternalServerErrorException(
         `Error occured while fetching medications`,
       );
@@ -98,7 +78,7 @@ export class MedicationService {
 
       return medication ?? medication;
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       throw new InternalServerErrorException(
         `Unable to fetch a medication with ID ${id}`,
       );

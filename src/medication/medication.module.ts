@@ -9,5 +9,6 @@ import { DroneModule } from 'src/drone/drone.module';
   imports: [TypeOrmModule.forFeature([Medication]), DroneModule],
   controllers: [MedicationController],
   providers: [MedicationService],
+  exports: [MedicationService],
 })
 export class MedicationModule {}

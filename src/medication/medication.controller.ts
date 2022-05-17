@@ -12,8 +12,10 @@ import { MedicationService } from './medication.service';
 import { CreateMedicationDto } from './dto/create-medication.dto';
 import { UpdateMedicationDto } from './dto/update-medication.dto';
 import { JwtGuard } from 'src/auth/guards/auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
 @UseGuards(JwtGuard)
+@ApiTags('Medications')
 @Controller('medications')
 export class MedicationController {
   constructor(private readonly medicationService: MedicationService) {}
@@ -35,7 +37,7 @@ export class MedicationController {
 
   @Get('drone/:droneId/')
   async fetchLoadedMedications(@Param('droneId') droneId: number) {
-    return await this.medicationService.fetchLoadedMedication(droneId)
+    return await this.medicationService.fetchLoadedMedication(droneId);
   }
 
   @Patch(':id')
