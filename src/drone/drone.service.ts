@@ -30,6 +30,7 @@ export class DroneService {
     if (droneInput.WeightLimit) drone.WeightLimit = droneInput.WeightLimit;
     if (droneInput.BatteryCapacity)
       drone.BatteryCapacity = droneInput.BatteryCapacity;
+    drone.BatteryLevel = droneInput.BatteryCapacity;
     if (droneInput.State) drone.State = droneInput.State;
 
     return drone;

@@ -9,7 +9,7 @@ import {
   InternalServerErrorException,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/auth/guards/auth.guard';
 import { IServiceResponse } from 'src/interface/interface';
 import { DroneService } from './drone.service';
@@ -19,6 +19,7 @@ import { UpdateDroneDto } from './dto/update-drone.dto';
 @UseGuards(JwtGuard)
 @ApiTags('Drones')
 @Controller('drones')
+@ApiBearerAuth()
 export class DroneController {
   constructor(private readonly droneService: DroneService) {}
 

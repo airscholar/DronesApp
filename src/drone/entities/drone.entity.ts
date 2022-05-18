@@ -37,8 +37,11 @@ export class Drone {
   @Max(500)
   WeightLimit: number;
 
-  @Column()
+  @Column({ type: 'real' })
   BatteryCapacity: number;
+
+  @Column({ type: 'real', default: 0 })
+  BatteryLevel: number;
 
   @Column({
     type: 'enum',
