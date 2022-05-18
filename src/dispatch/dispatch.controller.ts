@@ -7,6 +7,7 @@ import { MedDroneDTO } from './dto/dispatch.dto';
 @UseGuards(JwtGuard)
 @ApiTags('Dispatch')
 @Controller('dispatch')
+@ApiBearerAuth()
 export class DispatchController {
   constructor(private readonly dispatchService: DispatchService) {}
 
@@ -20,7 +21,6 @@ export class DispatchController {
     return await this.dispatchService.checkDroneForMedication(payload);
   }
 
-  @ApiBearerAuth()
   @Get('/availableDrones')
   async checkAvaiableDrone() {
     return await this.dispatchService.checkAvailableDrone();
