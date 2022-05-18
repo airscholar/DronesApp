@@ -34,10 +34,15 @@ export class DispatchService {
     drone.State = DroneState.DELIVERING;
     await this.droneRepository.save(drone);
 
-    // reduce drone battery level by 50% after delivery
-    drone.BatteryLevel -= drone.BatteryCapacity * 0.5;
+    const DELIVERY_TIME_IN_MINS = 5 + Math.random() * 10; // 5-15 mins
+    const DISTANCE = 1 + Math.random() * 10; // 1 to 10 km
 
+    // reduce drone battery level by 65% after delivery
+    drone.BatteryLevel -=
+      drone.BatteryCapacity * ((DISTANCE * DELIVERY_TIME_IN_MINS) / 100);
+    drone.BatteryLevel < 0 ? (drone.BatteryLevel = 0) : drone.BatteryLevel;
     drone.State = DroneState.DELIVERED;
+    drone.Medication.pop();
     await this.droneRepository.save(drone);
 
     return {
