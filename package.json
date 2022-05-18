@@ -6,6 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "db:dev:restart": "docker compose rm -f -s -v dev-db && docker compose up -d",
+    "db:test:restart": "docker compose rm -f -s -v test-db && docker compose up -d && sleep 1",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -49,6 +51,7 @@
     "@nestjs/testing": "^8.0.0",
     "@types/express": "^4.17.13",
     "@types/jest": "27.0.2",
+    "@types/multer": "^1.4.7",
     "@types/node": "^16.0.0",
     "@types/passport-jwt": "^3.0.6",
     "@types/supertest": "^2.0.11",
