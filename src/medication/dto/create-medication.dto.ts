@@ -11,7 +11,5 @@ export class CreateMedicationDto {
   @IsUppercase()
   Code: string;
 
-  @IsNotEmpty()
-  @IsUrl()
   Image: string;
 }

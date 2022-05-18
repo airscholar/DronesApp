@@ -38,19 +38,19 @@ export class MedicationService {
   async createMedication(
     createMedicationDto: CreateMedicationDto,
   ): Promise<IServiceResponse> {
-    // try {
-    const newMedication = await this.assignMedication(createMedicationDto);
-    newMedication.CreatedAt = new Date();
-    newMedication.UpdatedAt = new Date();
+    try {
+      const newMedication = await this.assignMedication(createMedicationDto);
+      newMedication.CreatedAt = new Date();
+      newMedication.UpdatedAt = new Date();
 
-    const med = await this.medicationRepository.save(newMedication);
-    return {
-      message: 'Medication created successfully',
-      results: med,
-    };
-    // } catch (err) {
-    //   throw new InternalServerErrorException(err.detail);
-    // }
+      const med = await this.medicationRepository.save(newMedication);
+      return {
+        message: 'Medication created successfully',
+        results: med,
+      };
+    } catch (err) {
+      throw new InternalServerErrorException(err.detail ?? err.message);
+    }
   }
 
   async findAll(): Promise<IServiceResponse> {

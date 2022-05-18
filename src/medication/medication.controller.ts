@@ -7,22 +7,40 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { MedicationService } from './medication.service';
 import { CreateMedicationDto } from './dto/create-medication.dto';
 import { UpdateMedicationDto } from './dto/update-medication.dto';
 import { JwtGuard } from 'src/auth/guards/auth.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import serverConfig from 'src/config/env.config';
 
 @UseGuards(JwtGuard)
 @ApiTags('Medications')
 @Controller('medications')
+@ApiBearerAuth()
 export class MedicationController {
   constructor(private readonly medicationService: MedicationService) {}
 
   @Post()
-  async create(@Body() createMedicationDto: CreateMedicationDto) {
-    return this.medicationService.createMedication(createMedicationDto);
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: serverConfig.UPLOAD_PATH,
+      }),
+    }),
+  )
+  async create(
+    @Body() createMedicationDto: CreateMedicationDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    createMedicationDto.Image = file.filename;
+
+    return await this.medicationService.createMedication(createMedicationDto);
   }
 
   @Get()
