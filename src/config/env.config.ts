@@ -8,6 +8,7 @@ const NODE_ENV = env.get('NODE_ENV').asString();
 const DATABASE_URL = env.get('DATABASE_URL').asString() || '';
 const DATABASE_TYPE = env.get('DATABASE_TYPE').asString() || 'postgres';
 const JWT_SECRET = env.get('JWT_SECRET').asString();
+const UPLOAD_PATH = env.get('UPLOAD_PATH').asString();
 
 const serverConfig = {
   NODE_ENV,
@@ -15,6 +16,7 @@ const serverConfig = {
   DATABASE_URL,
   DATABASE_TYPE,
   JWT_SECRET,
+  UPLOAD_PATH,
 };
 
 export default serverConfig;
