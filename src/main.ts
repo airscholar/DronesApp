@@ -9,7 +9,8 @@ function setupSwagger(app: INestApplication) {
     .setTitle('Drones App')
     .setDescription('This is a drone app')
     .setVersion('0.1.0')
-    .setBasePath('/api/v1')
+    .addServer('/api/v1/')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
