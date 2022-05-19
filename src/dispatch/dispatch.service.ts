@@ -1,11 +1,16 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Drone, DroneState } from 'src/drone/entities/drone.entity';
 import { Medication } from 'src/medication/entities/medication.entity';
+import { AppLogger } from 'src/utils/logger';
 import { Repository } from 'typeorm';
 import { MedDroneDTO } from './dto/dispatch.dto';
 
@@ -15,6 +20,8 @@ export class DispatchService {
     @InjectRepository(Drone) private droneRepository: Repository<Drone>,
     @InjectRepository(Medication)
     private medicationRepository: Repository<Medication>,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: Logger,
   ) {}
 
   async dispatchLoadedDrone(droneId: number) {
@@ -147,6 +154,24 @@ export class DispatchService {
     if (!drones || drones instanceof Error) {
       throw new NotFoundException('No drones available');
     }
+    return {
+      message: 'Drones available',
+      results: drones,
+    };
+  }
+
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  async logDroneBatteryLevel() {
+    let drones = await this.droneRepository.find();
+    if (!drones || drones instanceof Error) {
+      throw new NotFoundException('No drones found');
+    }
+
+    drones.forEach((drone) => {
+      // AppLogger.log(`Drone ${drone.Id} battery level is ${drone.BatteryLevel}`);
+      this.logger.log(`Drone ${drone.Id} battery level ${drone.BatteryLevel}`);
+    });
+
     return {
       message: 'Drones available',
       results: drones,

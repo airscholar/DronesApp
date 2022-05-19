@@ -1,7 +1,23 @@
-import { Logger, LoggerService, LogLevel } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  LoggerService,
+  LogLevel,
+} from '@nestjs/common';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
+@Injectable()
 export class AppLogger extends Logger implements LoggerService {
+  constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: Logger,
+  ) {
+    super();
+  }
+
   log(message: any, ...optionalParams: any[]) {
+    this.logger.log(message);
     super.log(message, ...optionalParams);
   }
   error(message: any, ...optionalParams: any[]) {
