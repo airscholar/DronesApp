@@ -1,5 +1,5 @@
 import { Max, MaxLength } from 'class-validator';
-import { Medication } from 'src/medication/entities/medication.entity';
+import { Medication } from '../../medication/entities/medication.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum DroneState {
@@ -50,7 +50,7 @@ export class Drone {
   })
   State: string;
 
-  @OneToMany((type) => Medication, (medication) => medication.Drone, {
+  @OneToMany(() => Medication, (medication) => medication.Drone, {
     eager: true,
   })
   Medication: [Medication];

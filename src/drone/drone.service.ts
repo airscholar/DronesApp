@@ -62,7 +62,7 @@ export class DroneService {
 
   async findById(id: number): Promise<Drone | Error> {
     try {
-      let drone = await this.droneRepository.findOne({
+      const drone = await this.droneRepository.findOne({
         where: {
           Id: id,
         },
