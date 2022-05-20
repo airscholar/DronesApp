@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsUppercase, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsUppercase } from 'class-validator';
 
 export class CreateMedicationDto {
   @IsNotEmpty()

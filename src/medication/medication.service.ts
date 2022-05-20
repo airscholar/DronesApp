@@ -1,12 +1,10 @@
 import {
-  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DroneService } from 'src/drone/drone.service';
-import { Drone } from 'src/drone/entities/drone.entity';
 import { IServiceResponse } from 'src/interface/interface';
 import { Repository } from 'typeorm';
 import { CreateMedicationDto } from './dto/create-medication.dto';
@@ -105,7 +103,7 @@ export class MedicationService {
   }
 
   async fetchLoadedMedication(id: number) {
-    let drone = await this.droneService.findById(id);
+    const drone = await this.droneService.findById(id);
 
     if (!drone || drone instanceof Error) {
       throw new NotFoundException('Drone is not found');
