@@ -8,9 +8,8 @@ import {
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { Drone, DroneState } from 'src/drone/entities/drone.entity';
-import { Medication } from 'src/medication/entities/medication.entity';
-import { AppLogger } from 'src/utils/logger';
+import { Drone, DroneState } from '../drone/entities/drone.entity';
+import { Medication } from '../medication/entities/medication.entity';
 import { Repository } from 'typeorm';
 import { MedDroneDTO } from './dto/dispatch.dto';
 
@@ -25,7 +24,7 @@ export class DispatchService {
   ) {}
 
   async dispatchLoadedDrone(droneId: number) {
-    let drone = await this.droneRepository.findOne({ Id: droneId });
+    const drone = await this.droneRepository.findOne({ Id: droneId });
     if (!drone || drone instanceof Error) {
       throw new NotFoundException('Drone not found');
     }
@@ -59,8 +58,8 @@ export class DispatchService {
   }
 
   async loadDrone(payload: MedDroneDTO) {
-    let result = await this.fetchDroneAndMedication(payload);
-    let drone = result.drone,
+    const result = await this.fetchDroneAndMedication(payload);
+    const drone = result.drone,
       medication = result.medication;
 
     if (
@@ -71,7 +70,7 @@ export class DispatchService {
     }
 
     // calculate drone weight limit
-    let size =
+    const size =
       drone.Medication.reduce((acc, val) => acc + val.Weight, 0) +
       medication.Weight;
 
@@ -80,7 +79,9 @@ export class DispatchService {
     }
 
     // check if medication is already loaded
-    let isExist = drone.Medication.findIndex((x) => x.Code == medication.Code);
+    const isExist = drone.Medication.findIndex(
+      (x) => x.Code == medication.Code,
+    );
     if (isExist >= 0) {
       throw new BadRequestException('Medication already loaded');
     }
@@ -101,7 +102,7 @@ export class DispatchService {
     // reduce drone battery level by 25% after loading
     drone.BatteryLevel -= drone.BatteryCapacity * 0.25;
 
-    let savedDrone = await this.droneRepository.save(drone);
+    await this.droneRepository.save(drone);
     this.medicationRepository.save(medication);
 
     return {
@@ -111,11 +112,13 @@ export class DispatchService {
   }
 
   async checkDroneForMedication(payload: MedDroneDTO) {
-    let result = await this.fetchDroneAndMedication(payload);
-    let drone = result.drone,
+    const result = await this.fetchDroneAndMedication(payload);
+    const drone = result.drone,
       medication = result.medication;
 
-    let isExist = drone.Medication.findIndex((x) => x.Code == medication.Code);
+    const isExist = drone.Medication.findIndex(
+      (x) => x.Code == medication.Code,
+    );
     if (isExist >= 0) {
       return {
         message: 'Drone loaded with medication',
@@ -130,12 +133,12 @@ export class DispatchService {
 
   async fetchDroneAndMedication(payload: MedDroneDTO) {
     console.log({ payload });
-    let drone = await this.droneRepository.findOne({ Id: payload.droneId });
+    const drone = await this.droneRepository.findOne({ Id: payload.droneId });
     if (!drone || drone instanceof Error) {
       throw new NotFoundException('Drone not found');
     }
 
-    let medication = await this.medicationRepository.findOne({
+    const medication = await this.medicationRepository.findOne({
       Id: payload.medicationId,
     });
     if (!medication || medication instanceof Error) {
@@ -146,7 +149,7 @@ export class DispatchService {
   }
 
   async checkAvailableDrone() {
-    let drones = await this.droneRepository.find({
+    const drones = await this.droneRepository.find({
       where: {
         State: DroneState.IDLE,
       },
@@ -162,7 +165,7 @@ export class DispatchService {
 
   @Cron(CronExpression.EVERY_10_SECONDS)
   async logDroneBatteryLevel() {
-    let drones = await this.droneRepository.find();
+    const drones = await this.droneRepository.find();
     if (!drones || drones instanceof Error) {
       throw new NotFoundException('No drones found');
     }
