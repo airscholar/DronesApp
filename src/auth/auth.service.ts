@@ -41,13 +41,11 @@ export class AuthService {
   }
 
   async signup(dto: SignupDTO) {
-    const hash = await argon.hash(dto.password);
-
     const user = new User();
     user.firstName = dto.firstName;
     user.lastName = dto.lastName;
     user.email = dto.email;
-    user.password = hash;
+    user.password = dto.password;
 
     try {
       const savedUser = await this.authRepository.save(user);

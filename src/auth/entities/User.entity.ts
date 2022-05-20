@@ -1,5 +1,6 @@
 import { IsEmail, IsString } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import * as argon from 'argon2';
 
 @Entity()
 export class User {
@@ -32,4 +33,9 @@ export class User {
     type: 'timestamp',
   })
   updatedAt: Date;
+
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await argon.hash(this.password);
+  }
 }
