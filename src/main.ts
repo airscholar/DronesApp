@@ -3,7 +3,6 @@ import serverConfig from './config/env.config';
 import { AppModule } from './app.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AppLogger } from './utils/logger';
 
 function setupSwagger(app: INestApplication) {

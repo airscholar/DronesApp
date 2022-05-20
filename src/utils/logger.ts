@@ -1,10 +1,4 @@
-import {
-  Inject,
-  Injectable,
-  Logger,
-  LoggerService,
-  LogLevel,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger, LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
@@ -31,8 +25,5 @@ export class AppLogger extends Logger implements LoggerService {
   }
   verbose(message: any, ...optionalParams: any[]) {
     super.verbose(message, ...optionalParams);
-  }
-  setLogLevels(levels: LogLevel[]) {
-    // throw new Error('Method not implemented.');
   }
 }
