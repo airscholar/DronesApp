@@ -4,15 +4,15 @@ import serverConfig from './config/env.config';
 import { Drone } from './drone/entities/drone.entity';
 import { Medication } from './medication/entities/medication.entity';
 
-export const ORMConfig: TypeOrmModuleOptions = {
+const ORMConfig: TypeOrmModuleOptions = {
   type: 'postgres',
   url: serverConfig.DATABASE_URL,
   synchronize: true,
   logging: true,
   entities: ['**/*.entity{ .ts,.js}', User, Drone, Medication],
-  migrations: ['src/db/migrations/*.ts'],
+  migrations: ['dist/db/migrations/*.js'],
   cli: {
     migrationsDir: 'src/db/migrations',
   },
 };
-module.exports = ORMConfig;
+export default ORMConfig;
