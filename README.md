@@ -1,3 +1,44 @@
+# DRONES
+## Settign up the environment
+
+### 1. Setting up container for postgres database
+
+1. Ensure that you have docker installed on your machine.
+2. Then run the following command to spin up the docker container for postgres database.
+```bash
+npm install
+```
+After the command is executed, run the following command to spin up the docker container for postgres database and populate the database with sample data.
+
+```bash
+npm run db:dev:restart
+```
+
+### 2. Creating the `.env` file
+You can rename the `.env.example` file to `.env` and fill in the values. See sample below:
+
+    ```bash 
+    PORT=9000
+    NODE_ENV=development
+    DATABASE_URL="postgresql://postgres:postgres@localhost:5432/dronesApp?schema=public"
+    JWT_SECRET=THIS_IS_A_SECRET_KEY
+    UPLOAD_PATH="./upload"   
+    ```
+
+### 3. Running the application
+```bash
+npm run start:dev
+```
+Routes/endpoints documentation is done with [Swagger](https://swagger.io/).
+
+The url to the documentation is - `base_url/api/docs` where base_url is the url of the application. E.g. `http://localhost:9000/api/docs/` 
+
+### 4. Testing the application
+```bash
+npm run test
+```
+
+
 ## Drones
 
 [[_TOC_]]
